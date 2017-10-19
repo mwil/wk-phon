@@ -13,7 +13,7 @@
 // @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @grant       GM_addStyle
 // @require     http://code.jquery.com/jquery-2.0.3.min.js
-// @require     https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-orignial-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Orignial%20Database.js
+// @require https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-original-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Original%20Database.js
 // ==/UserScript==
 
 /*
