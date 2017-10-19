@@ -12,6 +12,7 @@
 // @version     1.1.0
 // @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @grant       GM_addStyle
+// @grant       unsafeWindow
 // @require     http://code.jquery.com/jquery-2.0.3.min.js
 // @require https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-original-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Original%20Database.js
 // ==/UserScript==
@@ -541,7 +542,7 @@ function scriptInit()
 /*
  * Helper Functions/Variables
  */
-//$ = unsafeWindow.$;
+$ = unsafeWindow.$;
 
 function isEmpty(value){
     return (typeof value === "undefined" || value === null);
