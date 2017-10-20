@@ -12,9 +12,8 @@
 // @version     1.1.0
 // @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @grant       GM_addStyle
-// @grant       unsafeWindow
 // @require     http://code.jquery.com/jquery-2.0.3.min.js
-// @require https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-original-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Original%20Database.js
+// @require     https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-original-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Original%20Database.js
 // ==/UserScript==
 
 /*
@@ -99,11 +98,9 @@
 /*
  *	=== Changelog ===
  *
- *	1.1.0 (October 2017)
+ *	1.1.0 (19 October 2017)
  *	- Cleaned up code
- *	- Added new section with more compositions
- *	- Added 'nonphon' to the database, where components are the same as the phonetic components, but used for its meaning
- *	- Corrected mistakes and moved items around.
+ *	- Fixed an issue with GreaseMonkey and onClick events in Firefox
  *
  *  1.0.5 (11 March 2014)
  *  - Relicensed under the GPLv3.
@@ -137,7 +134,7 @@ var scriptShortName = "WKPSC";
 scriptLog = debugLogEnabled ?
     function(msg)
     {
-        if (typeof msg === 'string')
+        if (typeof msg === "string")
             console.log(scriptShortName + ": " + msg);
         else
             console.log(msg);
@@ -368,21 +365,15 @@ function addElement(node)
         kanji = database[0].phonetic;
     else
     {
-        switch(curPage)
+        kanji = getKanji();
+
+        if (kanji === null)
         {
-            case PageEnum.kanji:
-                kanji = getCurrentKanji_Kanji();
-                break;
-            case PageEnum.reviews:
-                kanji = getCurrentKanji_Reviews();
-                break;
-            case PageEnum.lessons:
-                kanji = getCurrentKanji_Lessons();
-                break;
-            default:
-                throw Error("Unknown page!");
+            scriptLog("Unable to extract the current kanji!");
+            return;
         }
     }
+
     scriptLog(kanji);
 
     // Check whether the current kanji is in the database
@@ -420,17 +411,6 @@ function addElement(node)
 /*
  * Kanji Info Pages
  */
-function getCurrentKanji_Kanji()
-{
-    var kanjiNode = document.getElementsByClassName("kanji-icon")[0].childNodes[0];
-    var kanji = kanjiNode.innerHTML.trim();
-
-    if (kanji.length == 1)
-        return kanji;
-    else
-        throw new Error("Wrong 'kanji' length (" + kanji.length + "). kanji='"+ kanji +"'");
-}
-
 function kanjiInfo_init()
 {
     GM_addStyle('.WKPSC-hiragana { font-weight: bold; }');
@@ -451,19 +431,30 @@ function reviews_init()
     GM_addStyle('.WKPSC-more-information-show { margin-top: 20px; margin-bottom: -10px !important; display:block; }');
 }
 
+lessons_init = reviews_init;
+
+/*
+function getCurrentKanji_Kanji()
+{
+    var kanjiNode = document.getElementsByClassName("kanji-icon")[0].childNodes[0];
+    var kanji = kanjiNode.innerHTML.trim();
+
+    if (kanji.length == 1)
+        return kanji;
+    else
+        throw new Error("Wrong 'kanji' length (" + kanji.length + "). kanji='"+ kanji +"'");
+}
+
+
 function getCurrentKanji_Reviews()
 {
     var curItem = $.jStorage.get("currentItem");
+
     if ("kan" in curItem)
         return curItem.kan.trim();
     else
         return null;
 }
-
-/*
- * Lessons page
- */
-lessons_init = reviews_init;
 
 function getCurrentKanji_Lessons()
 {
@@ -478,6 +469,38 @@ function getCurrentKanji_Lessons()
         return kanji;
     else
         throw new Error("Wrong 'kanji' length (" + kanji.length + "). kanji='"+ kanji +"'");
+}
+*/
+
+/* Snatched from the stroke order script ... */
+/*
+ * Returns the current kanji
+ */
+function getKanji()
+{
+    switch(curPage)
+    {
+        case PageEnum.kanji:
+            return document.title[document.title.length - 1];
+
+        case PageEnum.reviews:
+            var curItem = $.jStorage.get("currentItem");
+
+            if ("kan" in curItem)
+                return curItem.kan.trim();
+            else
+                return null;
+
+        case PageEnum.lessons:
+            var kanjiNode = $("#character");
+
+            if (kanjiNode === undefined || kanjiNode === null)
+                return null;
+
+            return kanjiNode.text().trim();
+    }
+
+    return null;
 }
 
 /*
@@ -542,7 +565,9 @@ function scriptInit()
 /*
  * Helper Functions/Variables
  */
-$ = unsafeWindow.$;
+
+// This takes over the jQuery from the page ... why??
+//$ = unsafeWindow.$;
 
 function isEmpty(value){
     return (typeof value === "undefined" || value === null);
@@ -628,12 +653,13 @@ function waitForKeyElements (
         */
         targetNodes.each( function() {
             var jThis = $(this);
-            var alreadyFound = jThis.data ('alreadyFound') || false;
+            var alreadyFound = jThis.data('alreadyFound') || false;
 
             if (!alreadyFound)
             {
                 //--- Call the payload function.
                 var cancelFound = actionFunction(jThis);
+
                 if (cancelFound)
                     btargetsFound = false;
                 else
