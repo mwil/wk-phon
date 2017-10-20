@@ -338,18 +338,18 @@ var kanji_db = [
     },
     {
         kanji: "森", readings: [],
-        type: KTypeEnum.no_clue
+        type: KTypeEnum.comp_indicative
     },
 
     /* G2 */
 
     {
         kanji: "刀", readings: [],
-        type: KTypeEnum.no_clue
+        type: KTypeEnum.hieroglyph
     },
     {
-        kanji: "万", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "万", readings: ["まん", "ばん"],
+        type: KTypeEnum.derivative
     },
     {
         kanji: "丸", readings: [],
@@ -413,8 +413,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "心", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "心", readings: ["シン"],
+        type: KTypeEnum.hieroglyph
     },
     {
         kanji: "戸", readings: [],
@@ -1027,8 +1027,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "由", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "由", readings: ["ユ", "ユウ", "ユイ"],
+        type: KTypeEnum.hieroglyph
     },
     {
         kanji: "氷", readings: [],
@@ -8119,8 +8119,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "爪", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "爪", readings: ["ソウ"],
+        type: KTypeEnum.hieroglyph
     },
     {
         kanji: "嵐", readings: [],
@@ -8156,8 +8156,8 @@ var kanji_db = [
         type: KTypeEnum.comp_phonetic
     },
     {
-        kanji: "瓦", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "瓦", readings: ["ガ"],
+        type: KTypeEnum.hieroglyph
     },
     {
         kanji: "拳", readings: [],
@@ -8340,8 +8340,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "肘", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "肘", readings: ["チュウ"],
+        type: KTypeEnum.comp_indicative
     },
     {
         kanji: "麓", readings: [],
@@ -8941,6 +8941,30 @@ var phon_db = [
         compounds: ["儀", "犠", "議"], compound_ids: [],
         non_compounds: [], non_compound_ids: [],
         xrefs: ["義"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "兪", readings: ["ユ"],
+        compounds: ["愉", "喩", "癒", "諭", "輸"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: [], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "由", readings: ["ユ", "ユウ", "ユイ"],
+        compounds: ["油", "宙", "笛", "軸"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["由"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "莫", readings: ["バク", "マク", "ボ", "モ"],
+        compounds: ["募", "墓", "幕", "漠", "慕", "模", "膜", "暮"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: [], xref_ids: [],
         quality: -1.0
     },
 
