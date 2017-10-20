@@ -489,8 +489,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "交", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "交", readings: ["コウ"],
+        type: KTypeEnum.hieroglyph
     },
     {
         kanji: "会", readings: [],
@@ -509,7 +509,7 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "寺", readings: [],
+        kanji: "寺", readings: ["ジ"],
         type: KTypeEnum.no_clue
     },
     {
@@ -1863,8 +1863,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "司", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "司", readings: ["し", "す"],
+        type: KTypeEnum.comp_indicative
     },
     {
         kanji: "功", readings: [],
@@ -2623,8 +2623,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "可", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "可", readings: ["カ", "コク"],
+        type: KTypeEnum.comp_indicative
     },
     {
         kanji: "旧", readings: [],
@@ -3151,8 +3151,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "義", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "義", readings: ["ギ"],
+        type: KTypeEnum.comp_indicative
     },
     {
         kanji: "群", readings: [],
@@ -3452,7 +3452,7 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "我", readings: [],
+        kanji: "我", readings: ["ガ"],
         type: KTypeEnum.no_clue
     },
     {
@@ -4234,8 +4234,8 @@ var kanji_db = [
         type: KTypeEnum.no_clue
     },
     {
-        kanji: "召", readings: [],
-        type: KTypeEnum.no_clue
+        kanji: "召", readings: ["ショウ"],
+        type: KTypeEnum.comp_indicative
     },
     {
         kanji: "巨", readings: [],
@@ -8879,6 +8879,70 @@ var phon_db = [
         xrefs: ["包"], xref_ids: [],
         quality: -1.0
     },
+    {
+        // TODO: go comp
+        phonetic: "可", readings: ["カ", "コク"],
+        compounds: ["何", "河", "苛"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["可"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "司", readings: ["し", "す"],
+        compounds: ["伺", "詞", "飼", "嗣"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["司"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "召", readings: ["ショウ"],
+        compounds: ["招", "沼", "昭", "紹", "詔", "超"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["召"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "寺", readings: ["ジ"],
+        compounds: ["侍", "待", "持", "時", "特", "詩"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["寺"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "圭", readings: ["ケイ"],
+        compounds: ["崖", "街", "掛"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: [], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "交", readings: ["コウ"],
+        compounds: ["郊", "校", "絞", "較"], compound_ids: [],
+        non_compounds: ["効"], non_compound_ids: [],
+        xrefs: ["交"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "我", readings: ["ガ"],
+        compounds: ["餓"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["我"], xref_ids: [],
+        quality: -1.0
+    },
+    {
+        // TODO: go comp
+        phonetic: "義", readings: ["ギ"],
+        compounds: ["儀", "犠", "議"], compound_ids: [],
+        non_compounds: [], non_compound_ids: [],
+        xrefs: ["義"], xref_ids: [],
+        quality: -1.0
+    },
 
     {
         phonetic: "分", readings: ["フン", "ブン", "ブ"],
@@ -8908,5 +8972,5 @@ var phon_db = [
 /*
  * Notes stack
  *
- * 静
+ * 静荷歌
  */
