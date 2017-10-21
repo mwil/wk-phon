@@ -9,10 +9,10 @@
 // @include     https://www.wanikani.com/lesson/session*
 // @author      acm
 // @description Adds information to Wanikani about kanji that use Phonetic-Semantic Composition.
-// @version     1.1.0
+// @version     1.1.1
 // @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @grant       GM_addStyle
-// @require     http://code.jquery.com/jquery-2.0.3.min.js
+// @grant       unsafeWindow
 // @require     https://greasyfork.org/scripts/34328-wanikani-phonetic-semantic-composition-original-database/code/Wanikani%20Phonetic-Semantic%20Composition%20Original%20Database.js
 // ==/UserScript==
 
@@ -97,6 +97,10 @@
 
 /*
  *	=== Changelog ===
+ *	1.1.1 (21 October 2017)
+ *	- Snatched some code from WaniKani Stroke Order userscript:
+ *	-- Use of built-in MutationObserver instead of custom code
+ *	-- A single function to extract a kanji instead of 3
  *
  *	1.1.0 (19 October 2017)
  *	- Cleaned up code
@@ -147,6 +151,9 @@ scriptLog = debugLogEnabled ?
 // Stores the current Wanikani page we're on
 var PageEnum = Object.freeze({ unknown:0, kanji:1, reviews:2, lessons:3 });
 var curPage = PageEnum.unknown;
+
+// Use the jQuery of the page itself to access storage
+$ = unsafeWindow.$;
 
 /*
  * Database Functions
@@ -433,45 +440,6 @@ function reviews_init()
 
 lessons_init = reviews_init;
 
-/*
-function getCurrentKanji_Kanji()
-{
-    var kanjiNode = document.getElementsByClassName("kanji-icon")[0].childNodes[0];
-    var kanji = kanjiNode.innerHTML.trim();
-
-    if (kanji.length == 1)
-        return kanji;
-    else
-        throw new Error("Wrong 'kanji' length (" + kanji.length + "). kanji='"+ kanji +"'");
-}
-
-
-function getCurrentKanji_Reviews()
-{
-    var curItem = $.jStorage.get("currentItem");
-
-    if ("kan" in curItem)
-        return curItem.kan.trim();
-    else
-        return null;
-}
-
-function getCurrentKanji_Lessons()
-{
-    var kanjiNode = document.getElementById("character");
-
-    if (isEmpty(kanjiNode))
-        return null;
-
-    var kanji = kanjiNode.innerHTML.trim();
-
-    if (kanji.length == 1)
-        return kanji;
-    else
-        throw new Error("Wrong 'kanji' length (" + kanji.length + "). kanji='"+ kanji +"'");
-}
-*/
-
 /* Snatched from the stroke order script ... */
 /*
  * Returns the current kanji
@@ -545,7 +513,16 @@ function scriptInit()
             curPage = PageEnum.reviews;
 
             reviews_init();
-            waitForKeyElements("section[id=item-info-reading-mnemonic]", scriptEventFired, false);
+
+            var o = new MutationObserver( function(mutations) {
+                // The last one always has 2 mutations, so let's use that
+                if (mutations.length != 2)
+                    return;
+
+                scriptEventFired($("section[id=item-info-reading-mnemonic]"));
+            });
+
+            o.observe(document.getElementById('item-info'), {'attributes' : true});
         }
         else if (/\/lesson/.test(document.URL)) /* Lessons Pages */
         {
@@ -553,7 +530,12 @@ function scriptInit()
             curPage = PageEnum.lessons;
 
             lessons_init();
-            waitForKeyElements("li.active", scriptEventFired, false);
+
+            var o2 = new MutationObserver( function(mutations) {
+                scriptEventFired($("li.active"));
+            });
+
+            o2.observe(document.getElementById('supplement-kan'), {'attributes' : true});
         }
     }
     catch(err)
@@ -566,8 +548,6 @@ function scriptInit()
  * Helper Functions/Variables
  */
 
-// This takes over the jQuery from the page ... why??
-//$ = unsafeWindow.$;
 
 function isEmpty(value){
     return (typeof value === "undefined" || value === null);
@@ -596,116 +576,6 @@ function logError(error)
     console.error(scriptShortName + " Error: " + error.name + "\n\tMessage: " + error.message + stackMessage);
 }
 
-
-
-/*
- * Code by BrockA, thanks!
- * Taken from https://gist.github.com/BrockA/2625891
- */
-
-/*--- waitForKeyElements():  A utility function, for Greasemonkey scripts,
-    that detects and handles AJAXed content.
-
-    Usage example:
-
-        waitForKeyElements (
-            "div.comments"
-            , commentCallbackFunction
-        );
-
-        //--- Page-specific function to do what we want when the node is found.
-        function commentCallbackFunction (jNode) {
-            jNode.text ("This comment changed by waitForKeyElements().");
-        }
-
-    IMPORTANT: This function requires your script to have loaded jQuery.
-*/
-function waitForKeyElements (
- selectorTxt,    /* Required: The jQuery selector string that
-                    specifies the desired element(s).
-                 */
- actionFunction, /* Required: The code to run when elements are
-                    found. It is passed a jNode to the matched
-                    element.
-                 */
- bWaitOnce,      /* Optional: If false, will continue to scan for
-                    new elements even after the first match is
-                    found.
-                 */
- iframeSelector  /* Optional: If set, identifies the iframe to
-                    search.
-                 */
-)
-{
-    var targetNodes, btargetsFound;
-
-    if (typeof iframeSelector == "undefined")
-        targetNodes = $(selectorTxt);
-    else
-        targetNodes = $(iframeSelector).contents()
-                      .find(selectorTxt);
-
-    if (targetNodes && targetNodes.length > 0)
-    {
-        btargetsFound = true;
-        /*--- Found target node(s).  Go through each and act if they
-            are new.
-        */
-        targetNodes.each( function() {
-            var jThis = $(this);
-            var alreadyFound = jThis.data('alreadyFound') || false;
-
-            if (!alreadyFound)
-            {
-                //--- Call the payload function.
-                var cancelFound = actionFunction(jThis);
-
-                if (cancelFound)
-                    btargetsFound = false;
-                else
-                    jThis.data('alreadyFound', true);
-            }
-        });
-    }
-    else
-        btargetsFound = false;
-
-    //--- Get the timer-control variable for this selector.
-    var controlObj = waitForKeyElements.controlObj || {};
-    var controlKey = selectorTxt.replace (/[^\w]/g, "_");
-    var timeControl = controlObj[controlKey];
-
-    //--- Now set or clear the timer as appropriate.
-    if (btargetsFound && bWaitOnce && timeControl)
-    {
-        //--- The only condition where we need to clear the timer.
-        clearInterval (timeControl);
-
-        delete controlObj[controlKey];
-    }
-    else
-    {
-        //--- Set a timer, if needed.
-        if (!timeControl)
-        {
-            timeControl = setInterval(
-                function()
-                {
-                    waitForKeyElements(selectorTxt,
-                                       actionFunction,
-                                       bWaitOnce,
-                                       iframeSelector
-                                      );
-                },
-                300
-            );
-            controlObj[controlKey] = timeControl;
-        }
-    }
-
-    waitForKeyElements.controlObj = controlObj;
-}
-/* End of Code by BrockA */
 
 /*
  * Start the script
